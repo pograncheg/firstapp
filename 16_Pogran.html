@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/style.css">
+    <title>dz16</title>
+  </head>
+  <body>
+    <section class="container">
+
+    </section>
+    <script> 
+    "use strict";
+
+    const container = document.querySelector('.container');
+    let form = document.createElement('form');
+    let inputDate1 = document.createElement('input');
+    let inputDate2 = document.createElement('input');
+    let button = document.createElement('button');
+    inputDate1.type = 'date';
+    inputDate2.type = 'date';
+    button.innerHTML = 'Рассчитать';
+    button.disabled = true;
+    form.append(inputDate1, inputDate2, button);
+    container.append(form);
+
+    function goodDates(){
+      let date1 = new Date(Date.parse(inputDate1.value));
+      let date2 = new Date(Date.parse(inputDate2.value));
+      console.log(date1);
+      console.log(date2);
+      if((date1)&&(date2)&&(date2 > date1)){
+      // if((date1)&&(date2)){
+        button.disabled = false;
+      } else{
+        button.disabled = true;
+      }
+      // button.addEventListener('click', (e) => { 
+      //   e.preventDefault();
+      //   Promise.all([
+      //     fetch(`https://www.nbrb.by/api/exrates/rates/USD?parammode=2&ondate=${inputDate1.value}&periodicity=1`),
+      //     fetch(`https://www.nbrb.by/api/exrates/rates/USD?parammode=2&ondate=${inputDate2.value}&periodicity=1`)
+      //   ]).then(responses => Promise.all(responses.map(r => r.json())))
+      //   .then(users => {console.log(users) ; users.forEach(user => console.log(user.Cur_OfficialRate))})
+      // })
+    }
+    // data1.onchange = function(){
+    //   console.log(data1.value);
+    //   console.log(data2.value);
+    // };
+    inputDate1.onchange = goodDates;
+    inputDate2.onchange = goodDates;
+
+    let getButton = document.querySelector('button');
+    getButton.addEventListener('click', (e) => { 
+        e.preventDefault();
+        Promise.all([
+          fetch(`https://www.nbrb.by/api/exrates/rates/USD?parammode=2&ondate=${inputDate1.value}&periodicity=1`),
+          fetch(`https://www.nbrb.by/api/exrates/rates/USD?parammode=2&ondate=${inputDate2.value}&periodicity=1`)
+        ]).then(responses => Promise.all(responses.map(r => r.json())))
+        .then(users => {console.log(users) ; users.forEach(user => console.log(user.Cur_OfficialRate))})
+    })
+    </script>
+  </body>
+</html>
