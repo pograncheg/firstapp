@@ -14,8 +14,16 @@
     
     const container = document.querySelector('.container');
     let form = document.createElement('form');
+    let labelDate1 = document.createElement('label');
+    labelDate1.innerHTML = 'Период с';
+    labelDate1.style = 'display: inline';
     let inputDate1 = document.createElement('input');
+    let labelDate2 = document.createElement('label');
+    labelDate2.innerHTML = 'по';
+    labelDate2.style = 'display: inline';
     let inputDate2 = document.createElement('input');
+    labelDate1.append(inputDate1);
+    labelDate2.append(inputDate2);
     let button = document.createElement('button');
     inputDate1.type = 'date';
     inputDate2.type = 'date';
@@ -42,79 +50,42 @@
     labelMin.append(inputMinRate);
     labelMax.append(inputMaxRate);
 
-    form.append(inputDate1, inputDate2, button, labelMinDate, labelMin, labelMaxDate, labelMax);
-
-    // form.append(inputDate1, inputDate2, button, dateMinRate, inputMinRate, dateMaxRate, inputMaxRate);
+    form.append(labelDate1, labelDate2, button, labelMinDate, labelMin, labelMaxDate, labelMax);
 
     container.append(form);
 
     function goodDates(){
       let date1 = new Date(Date.parse(inputDate1.value));
       let date2 = new Date(Date.parse(inputDate2.value));
-      // console.log(date1);
-      // console.log(date2);
       let currentDate = new Date();
       if((date1)&&(date2)&&(date2 >= date1)&&(date2 < currentDate)){
-      // if((date1)&&(date2)){
         button.disabled = false;
       } else{
         button.disabled = true;
       }
-      // button.addEventListener('click', (e) => { 
-      //   e.preventDefault();
-      //   Promise.all([
-      //     fetch(`https://www.nbrb.by/api/exrates/rates/USD?parammode=2&ondate=${inputDate1.value}&periodicity=1`),
-      //     fetch(`https://www.nbrb.by/api/exrates/rates/USD?parammode=2&ondate=${inputDate2.value}&periodicity=1`)
-      //   ]).then(responses => Promise.all(responses.map(r => r.json())))
-      //   .then(users => {console.log(users) ; users.forEach(user => console.log(user.Cur_OfficialRate))})
-      // })
     }
-    // data1.onchange = function(){
-    //   console.log(data1.value);
-    //   console.log(data2.value);
-    // };
     inputDate1.onchange = goodDates;
     inputDate2.onchange = goodDates;
     let dateStart = new Date(Date.parse(inputDate1.value));
     let dateEnd = new Date(Date.parse(inputDate2.value));
     let getButton = document.querySelector('button');
-    // for(let i = dateStart; i <= dateEnd; i = i.setDate(i.getDate() + 1)){
-    //   console.log(i);
-    // }
     
     getButton.addEventListener('click', (e) => { 
         e.preventDefault();
-        // console.log(Date.parse(inputDate1.value));
         let dateStart = new Date(Date.parse(inputDate1.value));
         let dateEnd = new Date(Date.parse(inputDate2.value));
         let getButton = document.querySelector('button');
         let dates = [];
         for(let i = dateStart; i <= dateEnd; i.setTime(i.getTime() + 86400000)){
-          // console.log(i.toLocaleDateString());
-          let day = i.getDate();
+           let day = i.getDate();
           let month = i.getMonth()+1;
           let year = i.getFullYear();
           dates.push(`${year}-${month}-${day}`);
         }
         let requests = dates.map(date => fetch(`https://www.nbrb.by/api/exrates/rates/USD?parammode=2&ondate=${date}&periodicity=1`))
-        console.log(dates);
-        console.log(requests);
-        // Promise.all([
-        //   fetch(`https://www.nbrb.by/api/exrates/rates/USD?parammode=2&ondate=${inputDate1.value}&periodicity=1`),
-        //   fetch(`https://www.nbrb.by/api/exrates/rates/USD?parammode=2&ondate=${inputDate2.value}&periodicity=1`)
-        // ]).then(responses => Promise.all(responses.map(r => r.json())))
-        // .then(users => {
-        //   console.log(users); 
-        //   users.forEach(user => console.log(user.Cur_OfficialRate))
-        // })
+
         Promise.all(requests)
           .then(responses => Promise.all(responses.map(r => r.json())))
-          // .then(rates => {
-          //   let 
-          //   for(let i = 0; i < rates.length; i++){
-
-          //   }
-          // });
           .then(rates => {
             let maxRate = rates[0].Cur_OfficialRate;
             let maxIndex = 0;
@@ -132,19 +103,9 @@
               }
             }
             inputMaxRate.value = maxRate;
-            // dateMaxRate.value = dates[maxIndex];
             inputMinRate.value = minRate;
-            // dateMinRate.value = dates[minIndex];
-            // console.log(rates.reduce((a, b) => a > b ? a : b));
-            // console.log(rates.reduce((c, d) => c < d ? c : d));
-            // let rateMax = rates.reduce((a, b) => a > b ? a : b);
-            // let rateMin = rates.reduce((a, b) => a < b ? a : b);
             dateMaxRate.value = rates[maxIndex].Date.slice(0,10);
             dateMinRate.value = rates[minIndex].Date.slice(0,10);
-            // dateMaxRate.value = dates[0];
-            // dateMaxRate.value = dateMax.toLocaleDateString();
-            // inputMaxRate.value = rates.reduce((a, b) => a > b ? a : b).Cur_OfficialRate;
-            // inputMinRate.value = rates.reduce((a, b) => a < b ? a : b).Cur_OfficialRate;
           })
     })
     </script>
