@@ -49,8 +49,10 @@
     labelMaxDate.append(dateMaxRate);
     labelMin.append(inputMinRate);
     labelMax.append(inputMaxRate);
-
-    form.append(labelDate1, labelDate2, button, labelMinDate, labelMin, labelMaxDate, labelMax);
+    let buttonReset = document.createElement('button');
+    buttonReset.type = 'reset';
+    buttonReset.innerHTML = 'Очистить';
+    form.append(labelDate1, labelDate2, button, labelMinDate, labelMin, labelMaxDate, labelMax, buttonReset);
 
     container.append(form);
 
